@@ -64,6 +64,7 @@ const tmpTsconfig = {
   ...tsconfig,
   compilerOptions: {
     ...tsconfig.compilerOptions,
+    incremental: false,
     skipLibCheck: true,
   },
   files,
