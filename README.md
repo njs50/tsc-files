@@ -38,6 +38,19 @@ With lint-staged:
 
 For the most part, it just forwards all arguments to `tsc` with one exception: the specified files will not be forwarded — instead, they will be put at the `files` property of a temporary config that will be generated next to your original `tsconfig.json`. Other than that, just read `tsc --help`.
 
+## optional parameters
+
+```json
+{
+  "lint-staged": {
+    "**/*.ts": "tsc-files --noEmit --include ['next-env.d.ts']"
+  }
+}
+
+--include [files as per tsconfig] : optionally allow an include array to be passed to tsc, this might be needed for your base config. 
+
+```
+
 ## License
 
 Released under the [MIT License](./LICENSE.md).

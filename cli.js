@@ -17,14 +17,8 @@ const resolveFromRoot = (...paths) => {
   return join(process.cwd(), ...paths)
 }
 
+
 const args = process.argv.slice(2)
-
-const argsProjectIndex = args.findIndex(arg =>
-  ['-p', '--project'].includes(arg),
-)
-
-const argsProjectValue =
-  argsProjectIndex !== -1 ? args[argsProjectIndex + 1] : undefined
 
 const files = args.filter(file => /\.(ts|tsx)$/.test(file))
 if (files.length === 0) {
@@ -33,8 +27,28 @@ if (files.length === 0) {
 
 const remainingArgsToForward = args.slice().filter(arg => !files.includes(arg))
 
+
+const argsProjectIndex = remainingArgsToForward.findIndex(arg =>
+  ['-p', '--project'].includes(arg),
+)
+
+const argsProjectValue =
+  argsProjectIndex !== -1 ? remainingArgsToForward[argsProjectIndex + 1] : undefined
+
 if (argsProjectIndex !== -1) {
   remainingArgsToForward.splice(argsProjectIndex, 2)
+}
+
+const includesProjectIndex = remainingArgsToForward.findIndex(arg =>
+  ['-i', '--include'].includes(arg),
+)
+
+let argsIncludesValue =
+  includesProjectIndex !== -1 ? remainingArgsToForward[includesProjectIndex + 1] : undefined
+
+if (includesProjectIndex !== -1) {
+  argsIncludesValue = eval(argsIncludesValue)
+  remainingArgsToForward.splice(includesProjectIndex, 2)
 }
 
 // Load existing config
@@ -53,7 +67,7 @@ const tmpTsconfig = {
     skipLibCheck: true,
   },
   files,
-  include: [],
+  include: argsIncludesValue || [],
 }
 fs.writeFileSync(tmpTsconfigPath, JSON.stringify(tmpTsconfig, null, 2))
 
